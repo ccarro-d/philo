@@ -11,15 +11,17 @@
 // Structures
 typedef struct s_args
 {
-	int	philo_num;
-	int	time_to_die;
-	int	time_to_eat;
-	int	time_to_sleep;
-	int	eat_repetitions;
+	unsigned int	philo_num;
+	unsigned int	time_to_die;
+	unsigned int	time_to_eat;
+	unsigned int	time_to_sleep;
+	unsigned int	must_eat_times;
 }					t_args;
 
 // main.c function
-void				free_matrix(char **matrix);
-int					main(int argc, char **argv);
+int				main(int argc, char **argv);
+void			print_error(char *err_msg, int err_code);
+unsigned int	ft_atoi(char *str);
+void			init_args(t_args *args, char **argv);
 
 #endif
