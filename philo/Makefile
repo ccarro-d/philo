@@ -3,10 +3,10 @@ NAME = philo
 
 # Compilation
 CC = gcc
-CFLAGS = -Wall -Werror -Wextra #-fsanitize=address
+CFLAGS = -Wall -Werror -Wextra #-g #-fsanitize=thread	 #valgrind --tool=helgrind
 
 # Sources
-SRC = main.c philo.c utils.c init.c
+SRC = main.c philo.c utils.c init.c clean.c monitor.c
 
 OBJS = $(SRC:.c=.o)
 
