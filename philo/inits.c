@@ -2,6 +2,47 @@
 
 # include "philo.h"
 
+void	init_philos(t_philo *philos, t_rules *rules)
+{
+	int	i;
+
+	i = 0;
+	while (i < rules->philo_num)
+	{
+		philos[i].id = i + 1;
+		philos[i].meals_eaten = 0;
+		philos[i].last_meal = rules->start_time;
+		//philos[i].thread = ????
+		philos[i].left_fork = &rules->forks[i];
+		philos[i].right_fork = &rules->forks[(i + 1) % rules->philo_num];
+		philos[i].rules = rules;
+		i++;
+	}
+	return ;
+}
+
+int	init_mutexes(t_rules *rules)
+{
+	int	i;
+	int	ret;
+
+	rules->forks = malloc(sizeof(t_rules) * rules->philo_num);
+	if (!rules->forks)
+		return(print_error("Error > Forks allocation failed"));
+	i = 0;
+	while (i < rules->philo_num)
+	{
+		ret = pthread_mutex_init(&rules->forks[i], NULL);
+		if (ret != 0)
+			return(print_error("Error > Forks initialization failed"));
+		i++;
+	}
+	ret = pthread_mutex_init(&rules->print_locks, NULL);
+	if (ret != 0)
+		return(print_error("Error > Print lock initialization failed"));
+	return (0);
+}
+
 int	check_rules(t_rules *rules)
 {
 	if (rules->philo_num == 0)
@@ -25,7 +66,7 @@ int	check_rules(t_rules *rules)
 
 int	init_rules(t_rules *rules, char **argv)
 {
-	int	check;
+	int	ret;
 
 	rules->philo_num = ft_atoi(argv[1], "philo_num", 1);
 	rules->time_to_die = ft_atoi(argv[2], "time_to_die", 2);
@@ -41,10 +82,13 @@ int	init_rules(t_rules *rules, char **argv)
 	}
 	else
 		rules->must_eat_times == -1;
-	rules->start_time = gettime();
+	rules->start_time = get_time();
 	rules->anyone_dead = false;
-	check = check_rules(rules);
-	if (check != 0)
-		return (check);
+	ret = check_rules(rules);
+	if (ret != 0)
+		return (ret);
+	ret = init_mutexes(rules);
+		if (ret != 0)
+			return (ret);
 	return (0);
 }

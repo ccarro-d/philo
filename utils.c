@@ -2,14 +2,14 @@
 
 # include "philo.h"
 
-void	get_time(void)
+long long	get_time(void)
 {
 	struct timeval	tv;	
 	long long ms;
 
 	gettimeofday(&tv, NULL);
-	ms == (tv.tv_sec * 1000LL) + (tv.tv_usec / 1000000); // "1000LL" Asegura que la multiplicación sea en long long
-	return;
+	ms = (tv.tv_sec * 1000LL) + (tv.tv_usec / 1000); // "1000LL" Asegura que la multiplicación sea en long long
+	return (ms);
 }
 
 int	ft_atoi(char *str, char *rule, int arg_nbr)

@@ -6,13 +6,16 @@ int	main(int argc, char **argv)
 {
 
 	t_rules rules;
+	t_philo	*philos;
 	int	ret;
 
 	if (argc != 5 && argc != 6)
 		return(print_error("Invalid numer of arguments"));
 	ret = init_rules(&rules, argv);
 	if (ret != 0)
-		return (1);
+		return (ret);
+	philos = malloc(sizeof(t_philo) * rules.philo_num);
+	init_philos(philos, &rules);
 	philo(rules);
 	return (0);
 }

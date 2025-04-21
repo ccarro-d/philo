@@ -17,11 +17,11 @@
 // Structures
 typedef struct s_rules
 {
-	int	philo_num;
-	int	time_to_die;
-	int	time_to_eat;
-	int	time_to_sleep;
-	int	must_eat_times;
+	int				philo_num;
+	int				time_to_die;
+	int				time_to_eat;
+	int				time_to_sleep;
+	int				must_eat_times;
 
 	long long		start_time;
 	bool			anyone_dead;
@@ -33,14 +33,14 @@ typedef struct s_rules
 
 typedef struct s_philo
 {
-	int	id;
-	int	meals_eaten;
+	int				id;
+	int				meals_eaten;
 	long long		last_meal;
 	//char			status;
 	pthread_t		thread;
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
-	t_rules			rules;
+	t_rules			*rules;
 }	t_philo;
 
 // Es una estructura que se utiliza en diversas funciones de C para manejar el tiempo, como select, gettimeofday, y settimeofday
