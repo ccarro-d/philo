@@ -12,6 +12,20 @@ long long	get_time(void)
 	return (ms);
 }
 
+void print_log(t_philo *philo, char* message)
+{
+	long long	timestamp;
+
+	pthread_mutex_lock(&philo->rules->print_locks);
+	if (philo->rules->end_simulation == false)
+	{
+		timestamp = get_time() - philo->rules->start_time;
+		printf("%lld   %d   %s\n", timestamp, philo->id, message);
+	}
+	pthread_mutex_unlock(&philo->rules->print_locks);
+	return;
+}
+
 int	ft_atoi(char *str, char *rule, int arg_nbr)
 {
 	long long	nbr;
