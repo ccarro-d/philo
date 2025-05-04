@@ -2,11 +2,13 @@
 
 # include "philo.h"
 
-void	init_philos(t_philo *philos, t_rules *rules)
+int	init_philos(t_philo *philos, t_rules *rules)
 {
 	int	i;
+	int	ret;
 
 	i = 0;
+	ret = 0;
 	while (i < rules->philo_num)
 	{
 		philos[i].id = i + 1;
@@ -15,10 +17,13 @@ void	init_philos(t_philo *philos, t_rules *rules)
 		philos[i].last_meal = rules->start_time;
 		philos[i].left_fork = &rules->forks[i];
 		philos[i].right_fork = &rules->forks[(i + 1) % rules->philo_num];
+		ret = pthread_mutex_init(&philos->meal_lock, NULL);
+		if (ret != 0)
+			return (print_error("Error > Print lock initialization failed"));
 		philos[i].rules = rules;
 		i++;
 	}
-	return ;
+	return (0);
 }
 
 int	init_mutexes(t_rules *rules)
@@ -40,6 +45,9 @@ int	init_mutexes(t_rules *rules)
 	ret = pthread_mutex_init(&rules->print_locks, NULL);
 	if (ret != 0)
 		return(print_error("Error > Print lock initialization failed"));
+	ret = pthread_mutex_init(&rules->monitor_lock, NULL);
+	if (ret != 0)
+		return(print_error("Error > Monitor lock initialization failed"));
 	return (0);
 }
 

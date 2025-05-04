@@ -20,6 +20,17 @@ void print_log(t_philo *philo, char* message)
 	if (philo->rules->end_simulation == false)
 	{
 		timestamp = get_time() - philo->rules->start_time;
+		if (message == "is eating")
+		{
+			pthread_mutex_lock(&philo->meal_lock);
+			philo->last_meal = timestamp;
+			pthread_mutex_unlock(&philo->meal_lock);
+		}
+		if (message == "is dead")
+		{
+			philo->rules->end_simulation = true;
+			pthread_mutex_unlock(&philo->rules->monitor_lock);
+		}
 		printf("%lld   %d   %s\n", timestamp, philo->id, message);
 	}
 	pthread_mutex_unlock(&philo->rules->print_locks);

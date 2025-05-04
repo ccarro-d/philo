@@ -8,7 +8,6 @@ int	main(int argc, char **argv)
 	t_rules rules;
 	t_philo	*philos;
 	int	ret;
-	//int i;
 
 	if (argc != 5 && argc != 6)
 		return(print_error("Invalid numer of arguments"));
@@ -16,17 +15,19 @@ int	main(int argc, char **argv)
 	if (ret != 0)
 		return (ret);
 	philos = malloc(sizeof(t_philo) * rules.philo_num);
-	init_philos(philos, &rules);
-	ret = start_simulation(&rules, philos);
+	if (!philos)
+	{
+		free(rules.forks);
+		return(print_error("Error > Forks allocation failed"));
+	}
+	ret = init_philos(philos, &rules);
 	if (ret != 0)
 		return (ret);
-	// a partir de aquí se unifican los hilos (se podría hacer en función aparte)
-	/*i = 0;
-	while (i < rules.philo_num)
-	{
-		pthread_join(philos[i].thread, NULL);
-		i++;
-	}*/
+	ret = run_simulation(&rules, philos);
+	if (ret != 0)
+		return (ret);
+	free(rules.forks);
+	free(philos);
 	return (0);
 }
 

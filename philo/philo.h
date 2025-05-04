@@ -29,7 +29,8 @@ typedef struct s_rules
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	print_locks;
 
-	pthread_t	monitor; 
+	pthread_t		monitor; 
+	pthread_mutex_t	monitor_lock;
 	
 }	t_rules;
 
@@ -43,6 +44,7 @@ typedef struct s_philo
 	pthread_t		thread_id;
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
+	pthread_mutex_t	meal_lock;
 	t_rules			*rules;
 }	t_philo;
 
