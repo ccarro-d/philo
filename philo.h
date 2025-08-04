@@ -22,25 +22,22 @@ typedef struct s_rules
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				must_eat_times;
-
 	long long		start_time;
 	bool			end_simulation;
-
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	print_locks;
-
-	pthread_t		monitor; 
+	pthread_t		monitor;
 	pthread_mutex_t	monitor_lock;
-	
 }	t_rules;
 
 typedef struct s_philo
 {
 	int				id;
 	int				meals_eaten;
+	bool			alive; // para debugging
+	bool			eating;
 	bool			full;
 	long long		last_meal;
-	//char			status;
 	pthread_t		thread_id;
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;

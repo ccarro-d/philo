@@ -4,30 +4,30 @@
 
 int	main(int argc, char **argv)
 {
-
-	t_rules rules;
+	t_rules	rules;
 	t_philo	*philos;
-	int	ret;
 
 	if (argc != 5 && argc != 6)
-		return(print_error("Invalid numer of arguments"));
-	ret = init_rules(&rules, argv);
-	if (ret != 0)
-		return (ret);
+		return (print_error("Invalid numer of arguments"));
+	if (init_rules(&rules, argv))
+		return (1);
 	philos = malloc(sizeof(t_philo) * rules.philo_num);
 	if (!philos)
 	{
-		free(rules.forks);
-		return(print_error("Error > Forks allocation failed"));
+		free(&rules.forks);
+		return (print_error("Error > Philos allocation failed"));
 	}
-	ret = init_philos(philos, &rules);
-	if (ret != 0)
-		return (ret);
-	ret = run_simulation(&rules, philos);
-	if (ret != 0)
-		return (ret);
-	free(rules.forks);
-	free(philos);
+	if (init_philos(philos, &rules))
+	{
+		combined_free(&rules.forks, philos);
+		return (1);
+	}
+	if (run_simulation(&rules, philos))
+	{
+		combined_free(&rules.forks, philos);
+		return (1);
+	}
+	combined_free(&rules.forks, philos);
 	return (0);
 }
 
