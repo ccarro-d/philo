@@ -89,7 +89,7 @@ void	thinking_time(t_rules *rules)
 	time_to_eat = rules->time_to_eat;
 	time_to_sleep = rules->time_to_sleep;
 	rules->time_to_think = 0;
-	if (rules->philo_num % 2 && (time_to_eat > time_to_sleep))
+	if (rules->philo_num % 2 && (time_to_die > time_to_eat + time_to_sleep))
 	{
 		if (time_to_die >= time_to_eat * 2 + time_to_sleep)
 			rules->time_to_think = time_to_eat * 2 - time_to_sleep;

@@ -2,6 +2,50 @@
 
 #include "philo.h"
 
+void	sync_simulation(t_rules *rules, t_philo *philos)
+{
+	int	i;
+
+	i = 0;
+	while (i < rules->philo_num)
+	{
+		pthread_mutex_lock(&rules->monitor_lock);
+		if (philos[i].ready)
+			i++;
+		pthread_mutex_unlock(&rules->monitor_lock);
+		usleep(100);
+	}
+	usleep(50);
+	pthread_mutex_lock(&rules->monitor_lock);
+	rules->start_time = get_time();
+	pthread_mutex_unlock(&rules->monitor_lock);
+	i = 0;
+	while (i < rules->philo_num)
+	{
+		philos[i].last_meal = rules->start_time;
+		i++;
+	}
+	pthread_mutex_lock(&rules->monitor_lock);
+	rules->simulation_on_hold = false;
+	pthread_mutex_unlock(&rules->monitor_lock);
+	return ;
+}
+
+void	release_simulation(t_rules	*rules)
+{
+	while (true)
+	{
+		pthread_mutex_lock(&rules->monitor_lock);
+		if (rules->simulation_on_hold == false)
+		{
+			pthread_mutex_unlock(&rules->monitor_lock);
+			break ;
+		}
+		pthread_mutex_unlock(&rules->monitor_lock);
+		usleep(100);
+	}
+}
+
 bool	continue_simulation(t_rules	*rules)
 {
 	bool	to_be_continued;

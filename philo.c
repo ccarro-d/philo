@@ -64,9 +64,10 @@ void	*go_to_table(void *arg)
 
 	philo = (t_philo *)arg;
 	rules = philo->rules;
+	pthread_mutex_lock(&rules->monitor_lock);
 	philo->ready = true;
-	while (rules->simulation_on_hold == true)
-		usleep(100);
+	pthread_mutex_unlock(&rules->monitor_lock);
+	release_simulation(rules);
 	if (rules->philo_num > 1)
 	{
 		if (rules->philo_num % 2 && philo->id == rules->philo_num)

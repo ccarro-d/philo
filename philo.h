@@ -80,6 +80,8 @@ void		philo_routine(t_rules *rules, t_philo *philo);
 void		*go_to_table(void *arg);
 
 // monitor.c funcitions
+void		sync_simulation(t_rules *rules, t_philo *philos);
+void		release_simulation(t_rules	*rules);
 bool		continue_simulation(t_rules	*rules);
 void		all_meals_eaten(t_philo *philos);
 void		*monitor_philosophers(void *arg);
@@ -93,7 +95,6 @@ int			destroy_and_free(t_rules *rules, t_philo *philos);
 // time.c functions
 long long	get_time(void);
 void		precise_usleep(long long time_ms, long long start);
-void		sync_simulation(t_rules *rules, t_philo *philos);
 
 // debug.c functions
 void		print_rules(t_rules *rules);

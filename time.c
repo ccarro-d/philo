@@ -26,26 +26,3 @@ void	precise_usleep(long long time_ms, long long start)
 		usleep(100);
 	return ;
 }
-
-void	sync_simulation(t_rules *rules, t_philo *philos)
-{
-	int	i;
-
-	i = 0;
-	while (i < rules->philo_num)
-	{
-		if (philos[i].ready)
-			i++;
-		usleep(100);
-	}
-	usleep(50);
-	rules->start_time = get_time();
-	i = 0;
-	while (i < rules->philo_num)
-	{
-		philos[i].last_meal = rules->start_time;
-		i++;
-	}
-	rules->simulation_on_hold = false;
-	return ;
-}

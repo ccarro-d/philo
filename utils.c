@@ -40,9 +40,9 @@ void	print_log(t_philo *philo, char *message)
 {
 	long long	timestamp;
 
-	pthread_mutex_lock(&philo->rules->print_locks);
-	if (philo->rules->end_simulation == false)
+	if (continue_simulation(philo->rules))
 	{
+		pthread_mutex_lock(&philo->rules->print_locks);
 		timestamp = get_time();
 		if (!ft_strncmp(message, "is eating", ft_strlen(message)))
 		{
@@ -57,11 +57,12 @@ void	print_log(t_philo *philo, char *message)
 			philo->rules->end_simulation = true;
 			pthread_mutex_unlock(&philo->rules->monitor_lock);
 		}
+		pthread_mutex_lock(&philo->rules->monitor_lock);
 		timestamp -= philo->rules->start_time;
+		pthread_mutex_unlock(&philo->rules->monitor_lock);
 		printf("%lld %d %s\n", timestamp, philo->id, message);
+		pthread_mutex_unlock(&philo->rules->print_locks);
 	}
-	pthread_mutex_unlock(&philo->rules->print_locks);
-	return ;
 }
 
 int	ft_atoi(char *str, char *rule, int arg_nbr)
