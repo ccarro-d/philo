@@ -2,11 +2,11 @@
 NAME = philo
 
 # Compilation
-CC = gcc
-CFLAGS = -Wall -Werror -Wextra #-g #-fsanitize=thread	 #valgrind --tool=helgrind
+CC = cc
+CFLAGS = -Wall -Werror -Wextra -pthread #-g #-fsanitize=thread	 #valgrind --tool=helgrind
 
 # Sources
-SRC = main.c philo.c utils.c init.c clean.c monitor.c
+SRC = main.c philo.c utils.c inits.c clean.c monitor.c debug.c time.c
 
 OBJS = $(SRC:.c=.o)
 

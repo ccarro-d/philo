@@ -2,15 +2,38 @@
 
 #include "philo.h"
 
-long long	get_time(void)
+size_t	ft_strlen(const char *s)
 {
-	struct timeval	tv;
-	long long		ms;
+	int	i;
 
-	gettimeofday(&tv, NULL);
-	ms = (tv.tv_sec * 1000LL) + (tv.tv_usec / 1000);
-	// "1000LL" Asegura que la multiplicación sea en long long
-	return (ms);
+	i = 0;
+	while (s[i] != '\0')
+	{
+		i++;
+	}
+	return (i);
+}
+
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
+{
+	unsigned char	*str1;
+	unsigned char	*str2;
+
+	str1 = (unsigned char *)s1;
+	str2 = (unsigned char *)s2;
+	while (n)
+	{
+		if (*str1 > *str2)
+			return (1);
+		if (*str1 < *str2)
+			return (-1);
+		if (*str1 == '\0' || *str2 == '\0')
+			break ;
+		str1++;
+		str2++;
+		n--;
+	}
+	return (0);
 }
 
 void	print_log(t_philo *philo, char *message)
@@ -20,22 +43,22 @@ void	print_log(t_philo *philo, char *message)
 	pthread_mutex_lock(&philo->rules->print_locks);
 	if (philo->rules->end_simulation == false)
 	{
-		timestamp = get_time() - philo->rules->start_time;
-		if (message == "is eating")
+		timestamp = get_time();
+		if (!ft_strncmp(message, "is eating", ft_strlen(message)))
 		{
 			pthread_mutex_lock(&philo->meal_lock);
-			philo->eating = true;
 			philo->meals_eaten++;
 			philo->last_meal = timestamp;
 			pthread_mutex_unlock(&philo->meal_lock);
 		}
-		if (message == "is dead")
+		if (!ft_strncmp(message, "died", ft_strlen(message)))
 		{
 			pthread_mutex_lock(&philo->rules->monitor_lock);
 			philo->rules->end_simulation = true;
 			pthread_mutex_unlock(&philo->rules->monitor_lock);
 		}
-		printf("%lld   %d   %s\n", timestamp, philo->id, message);
+		timestamp -= philo->rules->start_time;
+		printf("%lld %d %s\n", timestamp, philo->id, message);
 	}
 	pthread_mutex_unlock(&philo->rules->print_locks);
 	return ;
@@ -48,7 +71,7 @@ int	ft_atoi(char *str, char *rule, int arg_nbr)
 	nbr = 0;
 	if (*str == 32 || (*str >= 9 && *str <= 13) || *str == 43 || *str == 45)
 	{
-		printf("ERROR > Argument %d (%s): used signs/spaces\n)", arg_nbr, rule);
+		printf("ERROR > Argument %d (%s): used signs/spaces\n", arg_nbr, rule);
 		return (-1);
 	}
 	while (*str)
@@ -72,13 +95,7 @@ int	ft_atoi(char *str, char *rule, int arg_nbr)
 
 int	print_error(char *err_msg)
 {
-	printf("%s\n", err_msg);
+	if (err_msg)
+		printf("%s\n", err_msg);
 	return (1);
-}
-
-void	combined_free(pthread_mutex_t *forks, t_philo *philos)
-{
-	free(forks);
-	free(philos);
-	return ;
 }
