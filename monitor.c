@@ -106,10 +106,12 @@ void	*monitor_philosophers(void *arg)
 			hunger_time = get_time() - philos[i].last_meal;
 			pthread_mutex_unlock(&philos[i].meal_lock);
 			if (hunger_time > rules->time_to_die)
+			{
 				print_log(&philos[i], "died");
-			else
-				all_meals_eaten(philos);
+				break ;
+			}
 		}
+		all_meals_eaten(philos);
 		precise_usleep(1, get_time());
 	}
 	return (NULL);

@@ -7,8 +7,10 @@ int	main(int argc, char **argv)
 	t_rules	rules;
 	t_philo	*philos;
 
+	if (argc == 1)
+		return (print_error("Arguments missing"));
 	if (argc != 5 && argc != 6)
-		return (print_error("Invalid numer of arguments"));
+		return (print_error("Invalid number of arguments"));
 	if (init_rules(&rules, argv))
 		return (1);
 	philos = malloc(sizeof(t_philo) * rules.philo_num);

@@ -6,7 +6,13 @@ CC = cc
 CFLAGS = -Wall -Werror -Wextra -pthread
 
 # Sources
-SRC = main.c philo.c utils.c inits.c clean.c monitor.c debug.c time.c
+SRC = 	main.c 		\
+		philo.c 	\
+		monitor.c	\
+		inits.c		\
+		time.c		\
+		utils.c		\
+		clean.c
 
 OBJS = $(SRC:.c=.o)
 

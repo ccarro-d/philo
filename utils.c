@@ -39,30 +39,30 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 void	print_log(t_philo *philo, char *message)
 {
 	long long	timestamp;
+	bool		is_dead;
+	bool		is_eating;
 
-	if (continue_simulation(philo->rules))
+	is_dead = (ft_strncmp(message, "died", ft_strlen(message)) == 0);
+	is_eating = (ft_strncmp(message, "is eating", ft_strlen(message)) == 0);
+	pthread_mutex_lock(&philo->rules->print_locks);
+	if (continue_simulation(philo->rules) || !ft_strncmp(message, "died", 4))
 	{
-		pthread_mutex_lock(&philo->rules->print_locks);
 		timestamp = get_time();
-		if (!ft_strncmp(message, "is eating", ft_strlen(message)))
+		if (is_eating)
 		{
 			pthread_mutex_lock(&philo->meal_lock);
 			philo->meals_eaten++;
 			philo->last_meal = timestamp;
 			pthread_mutex_unlock(&philo->meal_lock);
 		}
-		if (!ft_strncmp(message, "died", ft_strlen(message)))
-		{
-			pthread_mutex_lock(&philo->rules->monitor_lock);
-			philo->rules->end_simulation = true;
-			pthread_mutex_unlock(&philo->rules->monitor_lock);
-		}
 		pthread_mutex_lock(&philo->rules->monitor_lock);
+		if (is_dead)
+			philo->rules->end_simulation = true;
 		timestamp -= philo->rules->start_time;
 		pthread_mutex_unlock(&philo->rules->monitor_lock);
 		printf("%lld %d %s\n", timestamp, philo->id, message);
-		pthread_mutex_unlock(&philo->rules->print_locks);
 	}
+	pthread_mutex_unlock(&philo->rules->print_locks);
 }
 
 int	ft_atoi(char *str, char *rule, int arg_nbr)
@@ -97,6 +97,9 @@ int	ft_atoi(char *str, char *rule, int arg_nbr)
 int	print_error(char *err_msg)
 {
 	if (err_msg)
-		printf("%s\n", err_msg);
+	{
+		write(2, err_msg, ft_strlen(err_msg));
+		write(2, "\n", 1);
+	}
 	return (1);
 }

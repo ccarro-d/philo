@@ -97,7 +97,7 @@ long long	get_time(void);
 void		precise_usleep(long long time_ms, long long start);
 
 // debug.c functions
-void		print_rules(t_rules *rules);
-void		print_philos(t_philo *philo);
+/* void		print_rules(t_rules *rules); *
+ * void		print_philos(t_philo *philo);*/
 
 #endif
