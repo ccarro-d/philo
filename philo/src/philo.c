@@ -1,6 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ccarro-d <ccarro-d@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/19 18:40:24 by ccarro-d          #+#    #+#             */
+/*   Updated: 2025/08/19 20:43:30 by ccarro-d         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-
-#include "philo.h"
+#include "../philo.h"
 
 void	fork_action(t_fork *fork, t_fork_action action)
 {
@@ -28,6 +38,7 @@ void	fork_action(t_fork *fork, t_fork_action action)
 	return ;
 }
 
+// TODO: checkear antes de cada acción si la simulación debe seguir, prque ahora solo checkea al principio
 void	philo_routine(t_rules *rules, t_philo *philo)
 {
 	while (continue_simulation(rules) && can_eat(philo))
@@ -79,6 +90,7 @@ void	*go_to_table(void *arg)
 	return (NULL);
 }
 
+//TODO: los filósofos pueden seguir comiendo aunque hayan alcanzao el límite porque el subject dice "at least"
 bool	can_eat(t_philo *philo)
 {
 	int	nbr_of_meals;

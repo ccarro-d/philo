@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: ccarro-d <ccarro-d@student.42.fr>          +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2025/08/19 18:40:03 by ccarro-d          #+#    #+#              #
+#    Updated: 2025/08/19 20:36:41 by ccarro-d         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 # Exit
 NAME = philo
 
@@ -19,10 +31,10 @@ OBJ = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
 # Compilation
 CC = cc
-CFLAGS = -Wall -Werror -Wextra -pthread -I.
+CFLAGS = -Wall -Werror -Wextra -pthread
 
 # Build the executable
-$(NAME): $(OBJ) 
+$(NAME): $(OBJ)
 	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
 	@echo "✅ Compilation finished!"
 
@@ -72,10 +84,10 @@ ubsan:
 
 # Valgrind / Helgrind runs (Linux only)
 valgrind: all
-	valgrind --leak-check=full --show-leak-kinds=all ./$(NAME) 5 800 200 200
+	valgrind --leak-check=full --show-leak-kinds=all
 
 helgrind: all
-	valgrind --tool=helgrind ./$(NAME) 5 800 200 200
+	valgrind --tool=helgrind
 
 # Key words
 .PHONY: all clean fclean re asan tsan ubsan valgrind helgrind

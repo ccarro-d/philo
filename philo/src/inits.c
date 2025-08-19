@@ -1,6 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   inits.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ccarro-d <ccarro-d@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/19 18:40:37 by ccarro-d          #+#    #+#             */
+/*   Updated: 2025/08/19 20:37:31 by ccarro-d         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-
-#include "philo.h"
+#include "../philo.h"
 
 int	init_philos(t_philo *philos, t_rules *rules)
 {
@@ -80,6 +90,7 @@ void	thinking_time(t_rules *rules)
 	time_to_eat = rules->time_to_eat;
 	time_to_sleep = rules->time_to_sleep;
 	rules->time_to_think = 0;
+	//TODO: añadir al condicional el caso en que philos es par y time_to_sleep < time_to_eat
 	if (rules->philo_num % 2 && (time_to_die > time_to_eat + time_to_sleep))
 	{
 		if (time_to_die >= time_to_eat * 2 + time_to_sleep)
