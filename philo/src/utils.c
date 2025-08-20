@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cesar <cesar@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ccarro-d <ccarro-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 18:40:14 by ccarro-d          #+#    #+#             */
-/*   Updated: 2025/08/20 18:40:37 by cesar            ###   ########.fr       */
+/*   Updated: 2025/08/20 20:52:49 by ccarro-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,37 +50,20 @@ int	ft_atoi(char *str, char *rule, int arg_nbr)
 {
 	long long	nbr;
 
-	nbr = 0;
 	if (*str == 32 || (*str >= 9 && *str <= 13) || *str == 43 || *str == 45)
-	{
-		printf("ERROR > Argument %d (%s): used signs/spaces\n", arg_nbr, rule);
-		return (-1);
-	}
+		return (print_error_atoi(arg_nbr, rule, "used signs/spaces"));
+	if (*str == '\0')
+		return (print_error_atoi(arg_nbr, rule, "is not a number"));
+	nbr = 0;
 	while (*str)
 	{
 		if (*str >= 48 && *str <= 57)
 			nbr = (nbr * 10) + (*str - 48);
 		else
-		{
-			printf("ERROR > Argument %d (%s) is not a number\n", arg_nbr, rule);
-			return (-1);
-		}
+			return (print_error_atoi(arg_nbr, rule, "is not a number"));
 		str++;
 	}
 	if (nbr < 0 || nbr > INT_MAX)
-	{
-		printf("ERROR > Argument %d (%s): is out of range\n", arg_nbr, rule);
-		return (-1);
-	}
+		return (print_error_atoi(arg_nbr, rule, "is out of range"));
 	return ((int)nbr);
-}
-
-int	print_error(char *err_msg)
-{
-	if (err_msg)
-	{
-		write(2, err_msg, ft_strlen(err_msg));
-		write(2, "\n", 1);
-	}
-	return (1);
 }

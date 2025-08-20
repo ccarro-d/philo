@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cesar <cesar@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ccarro-d <ccarro-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 18:39:02 by ccarro-d          #+#    #+#             */
-/*   Updated: 2025/08/20 04:11:00 by cesar            ###   ########.fr       */
+/*   Updated: 2025/08/20 20:54:15 by ccarro-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,11 +69,12 @@ typedef struct s_philo
 // main.c functions
 int			main(int argc, char **argv);
 
-// utils.c functions
+// prints.c functions
 int			print_error(char *err_msg);
-int			ft_atoi(char *str, char *rule, int arg_nbr);
-size_t		ft_strlen(const char *s);
-int			ft_strncmp(const char *s1, const char *s2, size_t n);
+int			print_error_atoi(int arg_nbr, char *rule, char *error_message);
+void		ft_putstr_fd(char *txt, int fd);
+void		ft_putnbr_fd(int n, int fd);
+void		print_log(t_philo *philo, char *message);
 
 // inits.c functions
 int			init_rules(t_rules *rules, char **argv);
@@ -87,7 +88,6 @@ int			run_simulation(t_rules *rules, t_philo *philos);
 void		*go_to_table(void *arg);
 void		philo_routine(t_rules *rules, t_philo *philo);
 int			fork_action(t_rules *rules, t_fork *fork, t_fork_action action);
-void		print_log(t_philo *philo, char *message);
 
 // monitor.c funcitions
 void		sync_simulation(t_rules *rules, t_philo *philos);
@@ -96,15 +96,20 @@ bool		continue_simulation(t_rules	*rules);
 void		all_meals_eaten(t_philo *philos);
 void		*monitor_philosophers(void *arg);
 
+// time.c functions
+long long	get_time(void);
+void		precise_usleep(long long time_ms, long long start);
+void		watcher_usleep(t_rules *rules, long long time_ms, long long start);
+
+// utils.c functions
+int			ft_atoi(char *str, char *rule, int arg_nbr);
+size_t		ft_strlen(const char *s);
+int			ft_strncmp(const char *s1, const char *s2, size_t n);
+
 // clean.c funcitions
 int			free_forks(t_fork *forks, int init_forks, char *err_msg);
 void		destroy_mutexes(t_rules *rules, t_philo *philos);
 void		combined_free(t_fork *forks, t_philo *philos);
 int			destroy_and_free(t_rules *rules, t_philo *philos);
-
-// time.c functions
-long long	get_time(void);
-void		precise_usleep(long long time_ms, long long start);
-void		watcher_usleep(t_rules *rules, long long time_ms, long long start);
 
 #endif

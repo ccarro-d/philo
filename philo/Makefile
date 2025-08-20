@@ -6,7 +6,7 @@
 #    By: ccarro-d <ccarro-d@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/19 18:40:03 by ccarro-d          #+#    #+#              #
-#    Updated: 2025/08/19 20:36:41 by ccarro-d         ###   ########.fr        #
+#    Updated: 2025/08/20 20:03:49 by ccarro-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,9 +19,10 @@ OBJ_DIR = obj
 
 # Sources
 SRC = 	$(SRC_DIR)/main.c 		\
+		$(SRC_DIR)/prints.c		\
+		$(SRC_DIR)/inits.c		\
 		$(SRC_DIR)/philo.c 		\
 		$(SRC_DIR)/monitor.c	\
-		$(SRC_DIR)/inits.c		\
 		$(SRC_DIR)/time.c		\
 		$(SRC_DIR)/utils.c		\
 		$(SRC_DIR)/clean.c
