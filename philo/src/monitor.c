@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ccarro-d <ccarro-d@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cesar <cesar@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 18:40:28 by ccarro-d          #+#    #+#             */
-/*   Updated: 2025/08/19 18:43:30 by ccarro-d         ###   ########.fr       */
+/*   Updated: 2025/08/20 03:51:15 by cesar            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,6 @@ void	all_meals_eaten(t_philo *philos)
 {
 	int	i;
 	int	completed;
-	int	meals_eaten;
 
 	if (philos->rules->must_eat_times == -1)
 		return ;
@@ -83,10 +82,12 @@ void	all_meals_eaten(t_philo *philos)
 	while (i < philos->rules->philo_num)
 	{
 		pthread_mutex_lock(&philos[i].meal_lock);
-		meals_eaten = philos[i].meals_eaten;
-		pthread_mutex_unlock(&philos[i].meal_lock);
-		if (meals_eaten >= philos->rules->must_eat_times)
+		if (!philos[i].full
+			&& (philos[i].meals_eaten >= philos->rules->must_eat_times))
+			philos[i].full = true;
+		if (philos[i].full == true)
 			completed++;
+		pthread_mutex_unlock(&philos[i].meal_lock);
 		i++;
 	}
 	if (completed == philos->rules->philo_num)
@@ -95,7 +96,6 @@ void	all_meals_eaten(t_philo *philos)
 		philos->rules->end_simulation = true;
 		pthread_mutex_unlock(&philos->rules->monitor_lock);
 	}
-	return ;
 }
 
 void	*monitor_philosophers(void *arg)
@@ -122,7 +122,7 @@ void	*monitor_philosophers(void *arg)
 			}
 		}
 		all_meals_eaten(philos);
-		precise_usleep(1, get_time());
+		precise_usleep(1 / 2, get_time());
 	}
 	return (NULL);
 }

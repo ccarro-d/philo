@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ccarro-d <ccarro-d@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cesar <cesar@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 18:40:14 by ccarro-d          #+#    #+#             */
-/*   Updated: 2025/08/19 18:46:13 by ccarro-d         ###   ########.fr       */
+/*   Updated: 2025/08/20 04:09:07 by cesar            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,35 +44,6 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 		n--;
 	}
 	return (0);
-}
-
-void	print_log(t_philo *philo, char *message)
-{
-	long long	timestamp;
-	bool		is_dead;
-	bool		is_eating;
-
-	is_dead = (ft_strncmp(message, "died", ft_strlen(message)) == 0);
-	is_eating = (ft_strncmp(message, "is eating", ft_strlen(message)) == 0);
-	pthread_mutex_lock(&philo->rules->print_locks);
-	if (continue_simulation(philo->rules) || !ft_strncmp(message, "died", 4))
-	{
-		timestamp = get_time();
-		if (is_eating)
-		{
-			pthread_mutex_lock(&philo->meal_lock);
-			philo->meals_eaten++;
-			philo->last_meal = timestamp;
-			pthread_mutex_unlock(&philo->meal_lock);
-		}
-		pthread_mutex_lock(&philo->rules->monitor_lock);
-		if (is_dead)
-			philo->rules->end_simulation = true;
-		timestamp -= philo->rules->start_time;
-		pthread_mutex_unlock(&philo->rules->monitor_lock);
-		printf("%lld %d %s\n", timestamp, philo->id, message);
-	}
-	pthread_mutex_unlock(&philo->rules->print_locks);
 }
 
 int	ft_atoi(char *str, char *rule, int arg_nbr)

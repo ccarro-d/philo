@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   inits.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ccarro-d <ccarro-d@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cesar <cesar@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 18:40:37 by ccarro-d          #+#    #+#             */
-/*   Updated: 2025/08/19 20:37:31 by ccarro-d         ###   ########.fr       */
+/*   Updated: 2025/08/20 04:12:25 by cesar            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,23 +82,29 @@ int	check_rules(t_rules *rules)
 
 void	thinking_time(t_rules *rules)
 {
-	long long	time_to_die;
-	long long	time_to_eat;
-	long long	time_to_sleep;
+	long long	ttd;
+	long long	tte;
+	long long	tts;
+	long long	ttt;
+	long long	margin;
 
-	time_to_die = rules->time_to_die;
-	time_to_eat = rules->time_to_eat;
-	time_to_sleep = rules->time_to_sleep;
-	rules->time_to_think = 0;
-	//TODO: añadir al condicional el caso en que philos es par y time_to_sleep < time_to_eat
-	if (rules->philo_num % 2 && (time_to_die > time_to_eat + time_to_sleep))
+	ttd = rules->time_to_die;
+	tte = rules->time_to_eat;
+	tts = rules->time_to_sleep;
+	if (rules->philo_num <= 1 || (rules->philo_num % 2 == 0 && tte <= tts))
+		ttt = 0;
+	else
 	{
-		if (time_to_die >= time_to_eat * 2 + time_to_sleep)
-			rules->time_to_think = time_to_eat * 2 - time_to_sleep;
-		else
-			rules->time_to_think = time_to_eat - time_to_sleep;
+		ttt = tte - tts;
+		margin = ttd - tte - tts;
+		if (rules->philo_num % 2)
+			ttt += 1;
+		if (margin < ttt)
+			ttt = margin;
+		if (ttt < 0)
+			ttt = 0;
 	}
-	return ;
+	rules->time_to_think = ttt;
 }
 
 int	init_rules(t_rules *rules, char **argv)

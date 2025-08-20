@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   time.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ccarro-d <ccarro-d@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cesar <cesar@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 18:40:19 by ccarro-d          #+#    #+#             */
-/*   Updated: 2025/08/19 18:46:07 by ccarro-d         ###   ########.fr       */
+/*   Updated: 2025/08/20 01:02:59 by cesar            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,5 +34,26 @@ void	precise_usleep(long long time_ms, long long start)
 	usleep(fraction * 1e3);
 	while (get_time() - start < time_ms)
 		usleep(100);
+	return ;
+}
+
+void	watcher_usleep(t_rules *rules, long long time_ms, long long start)
+{
+	long long	end;
+	long long	now;
+	long long	remain;
+
+	end = start + time_ms;
+	while (continue_simulation(rules))
+	{
+		now = get_time();
+		if (now >= end)
+			break ;
+		remain = end - now;
+		if (remain > 5)
+			precise_usleep(1, now);
+		else
+			usleep(100);
+	}
 	return ;
 }

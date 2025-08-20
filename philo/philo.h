@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ccarro-d <ccarro-d@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cesar <cesar@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 18:39:02 by ccarro-d          #+#    #+#             */
-/*   Updated: 2025/08/19 18:39:12 by ccarro-d         ###   ########.fr       */
+/*   Updated: 2025/08/20 04:11:00 by cesar            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,6 @@ int			main(int argc, char **argv);
 // utils.c functions
 int			print_error(char *err_msg);
 int			ft_atoi(char *str, char *rule, int arg_nbr);
-void		print_log(t_philo *philo, char *message);
 size_t		ft_strlen(const char *s);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
 
@@ -85,9 +84,10 @@ int			init_philos(t_philo *philos, t_rules *rules);
 
 // philo.c funcitions
 int			run_simulation(t_rules *rules, t_philo *philos);
-bool		can_eat(t_philo *philo);
-void		philo_routine(t_rules *rules, t_philo *philo);
 void		*go_to_table(void *arg);
+void		philo_routine(t_rules *rules, t_philo *philo);
+int			fork_action(t_rules *rules, t_fork *fork, t_fork_action action);
+void		print_log(t_philo *philo, char *message);
 
 // monitor.c funcitions
 void		sync_simulation(t_rules *rules, t_philo *philos);
@@ -105,9 +105,6 @@ int			destroy_and_free(t_rules *rules, t_philo *philos);
 // time.c functions
 long long	get_time(void);
 void		precise_usleep(long long time_ms, long long start);
-
-// debug.c functions
-/* void		print_rules(t_rules *rules); *
- * void		print_philos(t_philo *philo);*/
+void		watcher_usleep(t_rules *rules, long long time_ms, long long start);
 
 #endif

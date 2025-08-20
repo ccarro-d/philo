@@ -3,69 +3,95 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ccarro-d <ccarro-d@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cesar <cesar@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 18:40:24 by ccarro-d          #+#    #+#             */
-/*   Updated: 2025/08/19 20:43:30 by ccarro-d         ###   ########.fr       */
+/*   Updated: 2025/08/20 04:18:43 by cesar            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
 
-void	fork_action(t_fork *fork, t_fork_action action)
+void	print_log(t_philo *philo, char *message)
 {
-	if (action == TAKE)
+	long long	timestamp;
+	bool		is_dead;
+	bool		is_eating;
+
+	is_dead = (ft_strncmp(message, "died", ft_strlen(message)) == 0);
+	is_eating = (ft_strncmp(message, "is eating", ft_strlen(message)) == 0);
+	pthread_mutex_lock(&philo->rules->print_locks);
+	if (continue_simulation(philo->rules) || !ft_strncmp(message, "died", 4))
 	{
-		while (true)
+		timestamp = get_time();
+		if (is_eating)
 		{
-			pthread_mutex_lock(&fork->lock);
-			if (fork->taken == false)
-			{
-				fork->taken = true;
-				pthread_mutex_unlock(&fork->lock);
-				break ;
-			}
-			pthread_mutex_unlock(&fork->lock);
-			usleep(100);
+			pthread_mutex_lock(&philo->meal_lock);
+			philo->meals_eaten++;
+			philo->last_meal = timestamp;
+			pthread_mutex_unlock(&philo->meal_lock);
 		}
+		pthread_mutex_lock(&philo->rules->monitor_lock);
+		if (is_dead)
+			philo->rules->end_simulation = true;
+		timestamp -= philo->rules->start_time;
+		pthread_mutex_unlock(&philo->rules->monitor_lock);
+		printf("%lld %d %s\n", timestamp, philo->id, message);
 	}
-	else if (action == DROP)
+	pthread_mutex_unlock(&philo->rules->print_locks);
+}
+
+int	fork_action(t_rules *rules, t_fork *fork, t_fork_action action)
+{
+	if (action == DROP && continue_simulation(rules))
 	{
 		pthread_mutex_lock(&fork->lock);
 		fork->taken = false;
 		pthread_mutex_unlock(&fork->lock);
+		return (1);
 	}
-	return ;
+	while (continue_simulation(rules))
+	{
+		pthread_mutex_lock(&fork->lock);
+		if (fork->taken == false)
+		{
+			fork->taken = true;
+			pthread_mutex_unlock(&fork->lock);
+			return (1);
+		}
+		pthread_mutex_unlock(&fork->lock);
+		usleep(100);
+	}
+	return (0);
 }
 
-// TODO: checkear antes de cada acción si la simulación debe seguir, prque ahora solo checkea al principio
 void	philo_routine(t_rules *rules, t_philo *philo)
 {
-	while (continue_simulation(rules) && can_eat(philo))
+	while (continue_simulation(rules))
 	{
-		fork_action(philo->first_fork, TAKE);
+		if (!fork_action(rules, philo->first_fork, TAKE))
+			break ;
 		print_log(philo, "has taken a fork");
 		if (rules->philo_num == 1)
 		{
-			fork_action(philo->first_fork, DROP);
+			fork_action(rules, philo->first_fork, DROP);
 			break ;
 		}
-		fork_action(philo->second_fork, TAKE);
+		if (!fork_action(rules, philo->second_fork, TAKE))
+			break ;
 		print_log(philo, "has taken a fork");
-		if (philo->first_fork->taken && philo->second_fork->taken)
-			print_log(philo, "is eating");
-		precise_usleep(rules->time_to_eat, get_time());
-		fork_action(philo->first_fork, DROP);
-		fork_action(philo->second_fork, DROP);
+		print_log(philo, "is eating");
+		watcher_usleep(rules, rules->time_to_eat, get_time());
+		fork_action(rules, philo->first_fork, DROP);
+		fork_action(rules, philo->second_fork, DROP);
 		print_log(philo, "is sleeping");
-		precise_usleep(rules->time_to_sleep, get_time());
+		watcher_usleep(rules, rules->time_to_sleep, get_time());
 		if (rules->time_to_think)
 		{
 			print_log(philo, "is thinking");
-			precise_usleep(rules->time_to_think * 0.42, get_time());
+			watcher_usleep(rules, rules->time_to_think, get_time());
 		}
 	}
-	return ;
 }
 
 void	*go_to_table(void *arg)
@@ -79,33 +105,10 @@ void	*go_to_table(void *arg)
 	philo->ready = true;
 	pthread_mutex_unlock(&rules->monitor_lock);
 	release_simulation(rules);
-	if (rules->philo_num > 1)
-	{
-		if (rules->philo_num % 2 && philo->id == rules->philo_num)
-			precise_usleep(rules->time_to_eat / 2, get_time());
-		if (rules->philo_num % 2 == 0 && philo->id % 2 == 0)
-			precise_usleep(rules->time_to_eat / 2, get_time());
-	}
+	if (philo->id % 2 == 0)
+		watcher_usleep(rules, rules->time_to_eat / 2, get_time());
 	philo_routine(rules, philo);
 	return (NULL);
-}
-
-//TODO: los filósofos pueden seguir comiendo aunque hayan alcanzao el límite porque el subject dice "at least"
-bool	can_eat(t_philo *philo)
-{
-	int	nbr_of_meals;
-	int	meals_eaten;
-
-	nbr_of_meals = philo->rules->must_eat_times;
-	if (nbr_of_meals == -1)
-		return (true);
-	pthread_mutex_lock(&philo->meal_lock);
-	meals_eaten = philo->meals_eaten;
-	pthread_mutex_unlock(&philo->meal_lock);
-	if (nbr_of_meals > meals_eaten)
-		return (true);
-	else
-		return (false);
 }
 
 int	run_simulation(t_rules *rules, t_philo *philos)
